@@ -1,2 +1,5 @@
-/test/
 /.idea/
+/test/
+/test.py/
+/test.ipynb/
+/data/
