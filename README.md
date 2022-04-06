@@ -39,13 +39,13 @@ Here are most of the experiments in the paper. We will reproduce some experiment
 
 ## Information of datasets used in paper
 
-| dataset              | size       | number of images | number of classes |
-|----------------------|------------|-----------------:|------------------:|
-| JFT-300M             | Unreleased |      303,000,000 |            18,291 |
-| ImageNet 21k         | Unknown    |       14,197,122 |            21,841 |
-| ImageNet ILSVRC-2012 | 155GB      |        1,281,167 |             1,000 |
-| ImageNet ReaL (val)  | 6GB        |           50,000 |             1,000 |
-| CIFAR-10             | 170MB      |           60,000 |                10 |
-| CIFAR-100            | 170MB      |           60,000 |               100 |
-| Oxford Flowers       | 330MB      |            8,189 |               102 |
-| Oxford IIIT-Pets     | 775MB      |            7,394 |                37 |
+| dataset              | size       | number of images | number of classes | Resolution   |
+|----------------------|------------|-----------------:|------------------:|--------------|
+| JFT-300M             | Unreleased |      303,000,000 |            18,291 | Unknown      |
+| ImageNet 21k         | Unknown    |       14,197,122 |            21,841 | 469*387(avg) |
+| ImageNet ILSVRC-2012 | 155GB      |        1,281,167 |             1,000 | 469*387(avg) |
+| ImageNet ReaL (val)  | 6GB        |           50,000 |             1,000 | 469*387(avg) |
+| CIFAR-10             | 170MB      |           60,000 |                10 | 32*32        |
+| CIFAR-100            | 170MB      |           60,000 |               100 | 32*32        |
+| Oxford Flowers-102   | 330MB      |            8,189 |               102 |              |
+| Oxford IIIT-Pets     | 775MB      |            7,394 |                37 |              |
