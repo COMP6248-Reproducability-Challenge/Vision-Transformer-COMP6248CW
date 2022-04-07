@@ -65,8 +65,8 @@ class MLP(nn.Module):
         out = self.fc1(x)
         out = F.relu(out)
         out = self.fc2(out)
-        if not self.training:
-            out = F.softmax(out, dim=1)
+        # if not self.training:
+        #     out = F.softmax(out, dim=1)
         return out
 
 
