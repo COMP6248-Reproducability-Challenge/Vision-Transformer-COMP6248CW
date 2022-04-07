@@ -7,7 +7,12 @@ import torch.nn.functional as F
 
 
 class ViT(nn.Module):
-    def __init__(self, input_size, patch_size):
+    """
+    Vision Transformer
+    """
+    # TODO expand parameters
+    # TODO check bugs
+    def __init__(self, input_size, patch_size, num_classes):
         super().__init__()
         self.patch_size = patch_size
         self.dim = patch_size[0] * patch_size[1] * 3
@@ -15,12 +20,54 @@ class ViT(nn.Module):
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
 
         self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size)
-        # TODO: Unfinished
+        self.encoder = TransformerEncoder(self.dim, 12)
+        self.mlp_head = MLP(self.dim, 768, num_classes)
+
+    def forward(self, tokens):
+        tokens = self.patch_pos_emb(tokens)
+        tokens = self.encoder(tokens)
+        tokens = self.mlp_head(tokens)
+        return tokens[:, 0, :]
+
+
+class TransformerEncoder(nn.Module):
+    """
+    Transformer Encoder
+    It is a little different with the original Transformer one.
+    The order of layers follow the paper in ViT.
+    """
+
+    def __init__(self, dim, heads):
+        super().__init__()
+        self.layer_norm = nn.LayerNorm(dim)
+        self.mha = nn.MultiheadAttention(dim, heads)
+        self.mlp = MLP(dim, 768, dim)
 
     def forward(self, x):
-        tokens = self.patch_pos_emb(x)
-        # TODO: Unfinished
-        return
+        x = self.layer_norm(x)
+        x = x + self.mha(x, x, x)[0]
+        x = self.layer_norm(x)
+        x = x + self.mlp(x)
+        return x
+
+
+class MLP(nn.Module):
+    """
+    Multilayer Perceptron
+    """
+
+    def __init__(self, input_size, hidden_size, outputs_size):
+        super().__init__()
+        self.fc1 = nn.Linear(input_size, hidden_size)
+        self.fc2 = nn.Linear(hidden_size, outputs_size)
+
+    def forward(self, x):
+        out = self.fc1(x)
+        out = F.relu(out)
+        out = self.fc2(out)
+        if not self.training:
+            out = F.softmax(out, dim=1)
+        return out
 
 
 class PatchAndPosEmb(nn.Module):
@@ -79,6 +126,4 @@ class LPFP(nn.Module):
         out = self.fc1(x)
         out = F.relu(out)
         out = self.fc2(out)
-        if not self.training:
-            out = F.softmax(out, dim=1)
         return out
