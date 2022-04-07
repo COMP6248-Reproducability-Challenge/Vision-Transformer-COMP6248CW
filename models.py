@@ -101,7 +101,7 @@ class PatchAndPosEmb(nn.Module):
 
     def patching(self, x):
         batch_size, _, _, _ = x.shape
-        tokens = torch.zeros(batch_size, 1, self.dim)
+        tokens = torch.zeros(batch_size, 1, self.dim).to(x.device)
         for i in range(0, self.patch_num[0]):
             for j in range(0, self.patch_num[1]):
                 token = x[:, :,
