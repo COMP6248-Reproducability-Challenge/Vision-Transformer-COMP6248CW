@@ -1,5 +1,5 @@
 /.idea/
 /test/
-/test.py/
-/test.ipynb/
+test.py
+test.ipynb
 /data/
