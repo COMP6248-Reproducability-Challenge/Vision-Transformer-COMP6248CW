@@ -51,6 +51,7 @@ Notice that the hand-in deadline is 13-May-2022 16:00.
 Here are most of the experiments in the paper. We will reproduce some experiments with check marks.
 
 * Build a standard ViT. √
+  ![9](img/ViT.jpg)
 * Pretrained ViT on JFT and finetune on other datasets comparing with other models like ResNet.
   ![1](img/1.png)
 * Pretraining on different size of datasets of ImageNet, ImageNet-21k, and JFT- 300M.
