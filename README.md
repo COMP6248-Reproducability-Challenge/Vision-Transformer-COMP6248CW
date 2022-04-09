@@ -49,3 +49,20 @@ Here are most of the experiments in the paper. We will reproduce some experiment
 | CIFAR-100            | 170MB      |           60,000 |               100 | 32*32        |
 | Oxford Flowers-102   | 330MB      |            8,189 |               102 |              |
 | Oxford IIIT-Pets     | 775MB      |            7,394 |                37 |              |
+
+# Environment
+Requirement:
+>Python >= 3.7.2
+> 
+>pytorch >= 1.11
+>
+>matplotlib >= 3.3
+>
+>scipy >= 1.6
+
+Conda virtual environment command:
+```
+conda create -n [your_venv_name] python=3.7.2
+conda install pytorch==1.11 torchvision torchaudio cudatoolkit=11.3 -c pytorch
+conda install matplotlib scipy
+```
