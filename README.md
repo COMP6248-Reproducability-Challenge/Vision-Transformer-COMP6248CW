@@ -27,7 +27,11 @@ The aim is to reproduce the code of the
 paper [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://openreview.net/forum?id=YicbFdNTTy)
 .
 
-First meeting: 10-April. The paper should have been read before the meeting.
+* First meeting: 10-April. The paper should have been read before the meeting.
+
+* Second meeting: 21-April. Try to transfer pretrained model and fine-tune on other datasets.
+
+* Third meeting: TBD.
 
 Notice that the hand-in deadline is 13-May-2022 16:00.
 
