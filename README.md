@@ -31,7 +31,7 @@ paper [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scal
 
 * Second meeting: 21-April. Try to transfer pretrained model and fine-tune on other datasets.
 
-* Third meeting: TBD.
+* Third meeting: 30-April. Finish experiments.
 
 Notice that the hand-in deadline is 13-May-2022 16:00.
 
@@ -63,9 +63,9 @@ Here are most of the experiments in the paper. We will reproduce some experiment
   ![2](img/2.png)
 * Transfer accuracy with increasing pre-training compute.
   ![3](img/3.png)
-* Research into embedding filters.
-* Research into positional embedding.
-* Research into attention distance.
+* Research into embedding filters. √
+* Research into positional embedding. √
+* Research into attention distance. √
   ![4](img/4.png)
 * The performance of ViT with self-supervision.
 * Compare SGD and Adam on ResNet.
@@ -76,6 +76,6 @@ Here are most of the experiments in the paper. We will reproduce some experiment
   ![7](img/7.png)
 * More research on axial attentions.
   ![8](img/8.png)
-* Attention maps.
+* Attention maps. √
   ![9](img/9.png)
 
