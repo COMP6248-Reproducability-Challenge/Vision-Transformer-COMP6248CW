@@ -15,19 +15,19 @@ if __name__ == "__main__":
         transforms.Resize(224),
         transforms.CenterCrop(224)
     ])
-    train_set = torchvision.datasets.Flowers102("./data", split="train", download=True, transform=transform)
-    train_loader = DataLoader(train_set, batch_size=128, shuffle=True)
-    test_set = torchvision.datasets.Flowers102("./data", split="test", download=True, transform=transform)
-    test_loader = DataLoader(test_set, batch_size=128, shuffle=True)
-    val_set = torchvision.datasets.Flowers102("./data", split="val", download=True, transform=transform)
-    val_loader = DataLoader(val_set, batch_size=128, shuffle=True)
+    train_set = torchvision.datasets.OxfordIIITPet("./data", split="trainval", download=True, transform=transform)
+    test_set = torchvision.datasets.OxfordIIITPet("./data", split="test", download=True, transform=transform)
+    train_loader = DataLoader(train_set, batch_size=64, shuffle=True)
+    test_loader = DataLoader(test_set, batch_size=64, shuffle=True)
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     # device = "cpu"
-    print("Model will be trained on device:", device)
+    print("Device:", device)
 
     model = ViT(input_size=(224, 224), patch_size=(16, 16), num_classes=102).to(device)
-    optimiser = optim.Adam(model.parameters(), weight_decay=0.1)
+    print(model)
+
+    optimiser = optim.SGD(model.parameters(), lr=1e-3)
     loss_function = nn.CrossEntropyLoss()
     num_epoch = 10
 
@@ -40,7 +40,7 @@ if __name__ == "__main__":
         for data in train_loader:
             model.train()
             inputs, labels = data
-            labels = labels - 1
+            # labels = labels - 1
             inputs, labels = inputs.to(device), labels.to(device)
 
             optimiser.zero_grad()
@@ -56,11 +56,10 @@ if __name__ == "__main__":
         running_loss = 0
         total = 0
         correct = 0
-        for data in val_loader:
+        for data in test_loader:
             with torch.no_grad():
                 model.eval()
                 inputs, labels = data
-                labels = labels - 1
                 inputs, labels = inputs.to(device), labels.to(device)
 
                 outputs = model(inputs)
@@ -72,8 +71,8 @@ if __name__ == "__main__":
                 total += len(labels)
                 correct += sum(pred == labels)
 
-        print("epoch %d/%d:(va)loss=%.4f" % (epoch, num_epoch, running_loss))
-        print("epoch %d/%d:(va)acc=%.4f%%" % (epoch, num_epoch, (100.0 * correct) / total))
+        print("epoch %d/%d:(te)loss=%.4f" % (epoch, num_epoch, running_loss))
+        print("epoch %d/%d:(te)acc=%.4f%%" % (epoch, num_epoch, (100.0 * correct) / total))
         val_loss_list.append(running_loss)
 
     torch.save(model.state_dict(), "test/vit")
