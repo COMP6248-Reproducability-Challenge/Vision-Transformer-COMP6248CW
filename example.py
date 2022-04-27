@@ -40,7 +40,7 @@ if __name__ == "__main__":
         for data in train_loader:
             model.train()
             inputs, labels = data
-            # labels = labels - 1
+
             inputs, labels = inputs.to(device), labels.to(device)
 
             optimiser.zero_grad()
