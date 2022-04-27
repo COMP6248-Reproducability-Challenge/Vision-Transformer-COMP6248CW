@@ -35,7 +35,7 @@ if __name__ == "__main__":
     test_loss_list = []
     val_loss_list = []
 
-    for epoch in range(10):
+    for epoch in range(num_epoch):
         running_loss = 0
         for data in train_loader:
             model.train()
