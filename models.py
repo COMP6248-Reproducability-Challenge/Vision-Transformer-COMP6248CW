@@ -10,17 +10,17 @@ class ViT(nn.Module):
     """
     Vision Transformer
     """
-    # TODO expand parameters
-    # TODO check bugs
-    def __init__(self, input_size, patch_size, num_classes):
+    def __init__(self, input_size, patch_size, num_classes, num_layers=12):
         super().__init__()
         self.patch_size = patch_size
         self.dim = patch_size[0] * patch_size[1] * 3
         self.input_size = input_size
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
 
+        self.num_layers = num_layers
+
         self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size)
-        self.encoder = TransformerEncoder(self.dim, 12)
+        self.encoder = TransformerEncoder(self.dim, 12, num_layers)
         self.mlp_head = MLP(self.dim, 768, num_classes)
 
     def forward(self, tokens):
@@ -33,6 +33,23 @@ class ViT(nn.Module):
 class TransformerEncoder(nn.Module):
     """
     Transformer Encoder
+    """
+
+    def __init__(self, dim, heads, num_layers):
+        super().__init__()
+        self.layers = nn.Sequential()
+        for _ in range(num_layers):
+            self.layers.add_module('transformer layer', TransformerEncoderLayer(dim, heads))
+
+
+    def forward(self, x):
+        x = self.layers(x)
+        return x
+
+
+class TransformerEncoderLayer(nn.Module):
+    """
+    Transformer Encoder Layer
     It is a little different with the original Transformer one.
     The order of layers follow the paper in ViT.
     """

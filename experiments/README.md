@@ -1,0 +1,1 @@
+Training ViT from scratch can be not possible for us due to the limitation of computing resources. So, we decide to do some in-depth experiments using transfer learning. The package torchvision provided some pre-trained models of Vision Transformer, so subsequent experiments will use the model and pre-trained parameters in the package torch instead of our build mentioned above.
