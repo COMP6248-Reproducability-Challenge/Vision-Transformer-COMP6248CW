@@ -5,28 +5,35 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 
+from collections import OrderedDict
+
 
 class ViT(nn.Module):
     """
     Vision Transformer
     """
-    def __init__(self, input_size, patch_size, num_classes, num_layers=12):
+
+    def __init__(self, input_size, patch_size, num_classes, num_layers=12, hidden_size=768, mlp_size=3072,
+                 num_attention_heads=12, num_channels=3):
         super().__init__()
         self.patch_size = patch_size
-        self.dim = patch_size[0] * patch_size[1] * 3
+        self.dim = patch_size[0] * patch_size[1] * num_channels
         self.input_size = input_size
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
 
         self.num_layers = num_layers
 
-        self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size)
-        self.encoder = TransformerEncoder(self.dim, 12, num_layers)
-        self.mlp_head = MLP(self.dim, 768, num_classes)
+        self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size, hidden_size, num_channels)
+        self.encoder = TransformerEncoder(self.dim, heads=num_attention_heads, num_layers=num_layers, mlp_size=mlp_size)
+        self.head = nn.Sequential(OrderedDict([
+            ('layer_norm', nn.LayerNorm(self.dim)),
+            ('head', nn.Linear(self.dim, out_features=num_classes, bias=True))
+        ]))
 
     def forward(self, tokens):
         tokens = self.patch_pos_emb(tokens)
         tokens = self.encoder(tokens)
-        tokens = self.mlp_head(tokens)
+        tokens = self.head(tokens)
         return tokens[:, 0, :]
 
 
@@ -35,12 +42,11 @@ class TransformerEncoder(nn.Module):
     Transformer Encoder
     """
 
-    def __init__(self, dim, heads, num_layers):
+    def __init__(self, dim, heads, num_layers, mlp_size):
         super().__init__()
         self.layers = nn.Sequential()
-        for _ in range(num_layers):
-            self.layers.add_module('transformer layer', TransformerEncoderLayer(dim, heads))
-
+        for n in range(num_layers):
+            self.layers.add_module('transformer_layer_' + str(n), TransformerEncoderLayer(dim, heads, mlp_size))
 
     def forward(self, x):
         x = self.layers(x)
@@ -54,16 +60,17 @@ class TransformerEncoderLayer(nn.Module):
     The order of layers follow the paper in ViT.
     """
 
-    def __init__(self, dim, heads):
+    def __init__(self, dim, heads, mlp_size):
         super().__init__()
-        self.layer_norm = nn.LayerNorm(dim)
+        self.layer_norm_1 = nn.LayerNorm(dim)
         self.mha = nn.MultiheadAttention(dim, heads)
-        self.mlp = MLP(dim, 768, dim)
+        self.layer_norm_2 = nn.LayerNorm(dim)
+        self.mlp = MLP(dim, mlp_size, dim)
 
     def forward(self, x):
-        x = self.layer_norm(x)
+        x = self.layer_norm_1(x)
         x = x + self.mha(x, x, x)[0]
-        x = self.layer_norm(x)
+        x = self.layer_norm_2(x)
         x = x + self.mlp(x)
         return x
 
@@ -93,13 +100,13 @@ class PatchAndPosEmb(nn.Module):
     1 patch and flatten  2 linear project  3 positional embedding
     """
 
-    def __init__(self, input_size, patch_size):
+    def __init__(self, input_size, patch_size, hidden_size, num_channels):
         super().__init__()
         self.patch_size = patch_size
-        self.dim = patch_size[0] * patch_size[1] * 3
+        self.dim = patch_size[0] * patch_size[1] * num_channels
         self.input_size = input_size
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
-        self.lpfp = LPFP(self.dim, hidden_size=768)
+        self.lpfp = LPFP(self.dim, hidden_size=hidden_size)
 
         self.cls_token = nn.Parameter(torch.randn(1, 1, self.dim))
         self.pos_emb = nn.Parameter(torch.rand(1, self.patch_num[0] * self.patch_num[1] + 1, self.dim))
