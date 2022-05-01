@@ -1,8 +1,11 @@
 # coding: utf-8
 #
+import os
 
 import torch
 import torch.nn as nn
+
+from pretrained_processor import *
 
 
 class ViT(nn.Module):
@@ -117,3 +120,19 @@ class PatchAndPosEmb(nn.Module):
         tokens += self.pos_emb
         tokens = tokens.permute(0, 2, 1)
         return tokens
+
+
+class ViTB16(ViT):
+    def __init__(self, pretrained=False):
+        super().__init__(input_size=(224, 224), patch_size=(16, 16), num_classes=1000)
+        FILENAME = "vit_b_16-c867db91.pth"
+        if pretrained:
+            if not os.path.exists(FILENAME):
+                print("Downloading.")
+                download_model(FILENAME, 'https://download.pytorch.org/models/vit_b_16-c867db91.pth')
+                print("Download successful, now loading.")
+            else:
+                print("Pretrained model exists, now loading.")
+        state_dict = transfer_pretrained_model(FILENAME)
+        self.load_state_dict(state_dict)
+        print("Pretrained model loaded.")
