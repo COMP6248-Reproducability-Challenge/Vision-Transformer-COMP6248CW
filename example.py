@@ -26,13 +26,15 @@ if __name__ == "__main__":
     model = ViT(input_size=(224, 224), patch_size=(16, 16), num_classes=102).to(device)
     print(model)
 
-    optimiser = optim.SGD(model.parameters(), lr=1e-2)
+    optimiser = optim.SGD(model.parameters(),
+                          lr=1e-2,
+                          momentum=0.9,
+                          weight_decay=1e-4)
     loss_function = nn.CrossEntropyLoss()
-    num_epoch = 10
+    num_epoch = 100
 
     train_loss_list = []
     test_loss_list = []
-    val_loss_list = []
 
     for epoch in range(num_epoch):
         running_loss = 0
@@ -51,7 +53,8 @@ if __name__ == "__main__":
 
             running_loss += loss.item()
         print("epoch %d/%d:(tr)loss=%.4f" % (epoch, num_epoch, running_loss))
-        val_loss_list.append(running_loss)
+        train_loss_list.append(running_loss)
+
         running_loss = 0
         total = 0
         correct = 0
@@ -72,7 +75,7 @@ if __name__ == "__main__":
 
         print("epoch %d/%d:(te)loss=%.4f" % (epoch, num_epoch, running_loss))
         print("epoch %d/%d:(te)acc=%.4f%%" % (epoch, num_epoch, (100.0 * correct) / total))
-        val_loss_list.append(running_loss)
+        test_loss_list.append(running_loss)
 
     torch.save(model.state_dict(), "test/vit")
     print("Saved.")
