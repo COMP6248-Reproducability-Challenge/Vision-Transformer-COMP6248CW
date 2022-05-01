@@ -83,14 +83,13 @@ class MLP(nn.Module):
     def __init__(self, input_size, hidden_size, outputs_size):
         super().__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
+        self.act = nn.GELU()
         self.fc2 = nn.Linear(hidden_size, outputs_size)
 
     def forward(self, x):
         out = self.fc1(x)
-        out = F.relu(out)
+        out = self.act(out)
         out = self.fc2(out)
-        # if not self.training:
-        #     out = F.softmax(out, dim=1)
         return out
 
 
