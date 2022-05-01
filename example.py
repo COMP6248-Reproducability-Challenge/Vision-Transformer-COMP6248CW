@@ -7,7 +7,7 @@ from torch.utils.data import DataLoader
 import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-from models import ViT
+from models import ViTB16
 
 if __name__ == "__main__":
     transform = transforms.Compose([
@@ -23,7 +23,9 @@ if __name__ == "__main__":
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     print("Device:", device)
 
-    model = ViT(input_size=(224, 224), patch_size=(16, 16), num_classes=37).to(device)
+    model = ViTB16(pretrained=False).to(device)
+    model.head = nn.Linear(in_features=768, out_features=37, bias=True)
+
     print(model)
 
     optimiser = optim.SGD(model.parameters(),

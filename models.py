@@ -133,6 +133,6 @@ class ViTB16(ViT):
                 print("Download successful, now loading.")
             else:
                 print("Pretrained model exists, now loading.")
-        state_dict = transfer_pretrained_model(FILENAME)
-        self.load_state_dict(state_dict)
-        print("Pretrained model loaded.")
+            state_dict = transfer_pretrained_model(FILENAME)
+            self.load_state_dict(state_dict)
+            print("Pretrained model loaded.")

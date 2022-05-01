@@ -1,17 +1,24 @@
 # Introduction
 
+This repository reproduced the Pytorch code of the
+paper [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scale](https://openreview.net/forum?id=YicbFdNTTy)
+and some experiments of it.
+
 This repository is for the group course work of COMP6248.
 
-# Environment
+# How to use
 
-Requirements:
+## Requirements:
+
 > Python >= 3.7.2
 >
->pytorch >= 1.11
+> pytorch >= 1.11
 >
->matplotlib >= 3.3
+> torchvision >= 0.12.0
 >
->scipy >= 1.6
+> matplotlib >= 3.3
+>
+> scipy >= 1.6
 
 Conda virtual environment command example:
 
@@ -21,6 +28,31 @@ conda activate [your_venv_name]
 conda install pytorch==1.11 torchvision torchaudio cudatoolkit=11.3 -c pytorch
 conda install matplotlib scipy
 ```
+
+## Instantiate a Vision Transformer model
+
+Following shows how to instantiate a model:
+
+```python
+from models import ViT
+
+model = ViT(input_size=(224, 224),
+            patch_size=(16, 16),
+            num_classes=1000)  # ViT-B/16
+```
+
+## Load pre-trained model
+
+Following shows how to load a pre-trained model:
+
+```python
+from models import ViTB16
+
+model = ViTB16(pretrained=True)  # pre-trained ViT-B/16
+```
+
+The `ViTB16` will download the pre-trained model that provided by [torchvision](https://github.com/pytorch/vision) and
+automatically transfer it to our form of state dictionary.
 
 # Plan
 
@@ -34,7 +66,9 @@ paper [An Image is Worth 16x16 Words: Transformers for Image Recognition at Scal
 
 * Third meeting: 30-April. Finish experiments.
 
-Notice that the hand-in deadline is 13-May-2022 16:00.
+* Fourth meeting: TBD. Report writing.
+
+Notice that the hand-in deadline is **13-May-2022 16:00**.
 
 ## Experiments
 
