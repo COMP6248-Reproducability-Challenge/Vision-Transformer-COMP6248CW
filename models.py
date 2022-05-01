@@ -3,9 +3,6 @@
 
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
-
-from collections import OrderedDict
 
 
 class ViT(nn.Module):
@@ -25,16 +22,13 @@ class ViT(nn.Module):
 
         self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size, hidden_size, num_channels)
         self.encoder = TransformerEncoder(self.dim, heads=num_attention_heads, num_layers=num_layers, mlp_size=mlp_size)
-        self.head = nn.Sequential(OrderedDict([
-            ('layer_norm', nn.LayerNorm(self.dim)),
-            ('head', nn.Linear(self.dim, out_features=num_classes, bias=True))
-        ]))
+        self.head = nn.Linear(self.dim, out_features=num_classes, bias=True)
 
     def forward(self, tokens):
         tokens = self.patch_pos_emb(tokens)
         tokens = self.encoder(tokens)
-        tokens = self.head(tokens)
-        return tokens[:, 0, :]
+        tokens = self.head(tokens[:, 0, :])
+        return tokens
 
 
 class TransformerEncoder(nn.Module):
@@ -47,6 +41,7 @@ class TransformerEncoder(nn.Module):
         self.layers = nn.Sequential()
         for n in range(num_layers):
             self.layers.add_module('transformer_layer_' + str(n), TransformerEncoderLayer(dim, heads, mlp_size))
+        self.layers.add_module('layer_norm', nn.LayerNorm(dim, eps=1e-06))
 
     def forward(self, x):
         x = self.layers(x)
@@ -62,16 +57,16 @@ class TransformerEncoderLayer(nn.Module):
 
     def __init__(self, dim, heads, mlp_size):
         super().__init__()
-        self.layer_norm_1 = nn.LayerNorm(dim)
-        self.mha = nn.MultiheadAttention(dim, heads)
-        self.layer_norm_2 = nn.LayerNorm(dim)
+        self.layer_norm_1 = nn.LayerNorm(dim, eps=1e-06)
+        self.mha = nn.MultiheadAttention(dim, heads, batch_first=True)
+        self.layer_norm_2 = nn.LayerNorm(dim, eps=1e-06)
         self.mlp = MLP(dim, mlp_size, dim)
 
     def forward(self, x):
-        x = self.layer_norm_1(x)
-        x = x + self.mha(x, x, x)[0]
-        x = self.layer_norm_2(x)
-        x = x + self.mlp(x)
+        x_ = self.layer_norm_1(x)
+        x_ = x + self.mha(x_, x_, x_)[0]
+        x = self.layer_norm_2(x_)
+        x = x_ + self.mlp(x)
         return x
 
 
@@ -105,48 +100,20 @@ class PatchAndPosEmb(nn.Module):
         self.dim = patch_size[0] * patch_size[1] * num_channels
         self.input_size = input_size
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
-        self.lpfp = LPFP(self.dim, hidden_size=hidden_size)
 
-        self.cls_token = nn.Parameter(torch.randn(1, 1, self.dim))
-        self.pos_emb = nn.Parameter(torch.rand(1, self.patch_num[0] * self.patch_num[1] + 1, self.dim))
+        self.conv = nn.Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
 
-    def forward(self, input):
-        b, c, w, h = input.shape  # b:batch_size  c:channel_size  w:width  h:height
-        # Patch and flatten
-        tokens = self.patching(input)
-        # Linear project
-        tokens = self.lpfp(tokens)
-        # Add cls token
-        tokens = torch.cat((self.cls_token.repeat(b, 1, 1), tokens), 1)
-        # Positional embedding
-        tokens += self.pos_emb
-        return tokens
-
-    def patching(self, x):
-        batch_size, _, _, _ = x.shape
-        tokens = torch.zeros(batch_size, 1, self.dim).to(x.device)
-        for i in range(0, self.patch_num[0]):
-            for j in range(0, self.patch_num[1]):
-                token = x[:, :,
-                        self.patch_size[0] * i:self.patch_size[0] * (i + 1),
-                        self.patch_size[1] * j:self.patch_size[1] * (j + 1)]
-                tokens = torch.cat((tokens, token.reshape(batch_size, 1, -1)), 1)
-        return tokens[:, 1:]
-
-
-class LPFP(nn.Module):
-    """
-    Linear Projection of Flattened Patches
-    Basically, it is an MLP with the same dim of input_size and output_size.
-    """
-
-    def __init__(self, input_size, hidden_size=768):
-        super().__init__()
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.fc2 = nn.Linear(hidden_size, input_size)
+        self.cls_token = nn.Parameter(torch.randn(1, self.dim, 1))
+        self.pos_emb = nn.Parameter(torch.rand(1, self.dim, self.patch_num[0] * self.patch_num[1] + 1))
 
     def forward(self, x):
-        out = self.fc1(x)
-        out = F.relu(out)
-        out = self.fc2(out)
-        return out
+        b, c, w, h = x.shape  # b:batch_size  c:channel_size  w:width  h:height
+        # Patch, flatten and Linear project
+        tokens = self.conv(x)
+        tokens = tokens.reshape([b, c * self.patch_size[0] * self.patch_size[1], self.patch_num[0] * self.patch_num[1]])
+        # Add cls token
+        tokens = torch.cat((self.cls_token.repeat(b, 1, 1), tokens), 2)
+        # Positional embedding
+        tokens += self.pos_emb
+        tokens = tokens.permute(0, 2, 1)
+        return tokens
