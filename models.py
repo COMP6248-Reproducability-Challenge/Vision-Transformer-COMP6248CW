@@ -24,8 +24,12 @@ class ViT(nn.Module):
         self.num_layers = num_layers
 
         self.patch_pos_emb = PatchAndPosEmb(self.input_size, self.patch_size, hidden_size, num_channels)
-        self.encoder = TransformerEncoder(self.dim, heads=num_attention_heads, num_layers=num_layers, mlp_size=mlp_size)
-        self.head = nn.Linear(self.dim, out_features=num_classes, bias=True)
+        self.encoder = TransformerEncoder(self.dim,
+                                          heads=num_attention_heads,
+                                          num_layers=num_layers,
+                                          hidden_size=hidden_size,
+                                          mlp_size=mlp_size)
+        self.head = nn.Linear(hidden_size, out_features=num_classes, bias=True)
 
     def forward(self, tokens):
         tokens = self.patch_pos_emb(tokens)
@@ -39,12 +43,15 @@ class TransformerEncoder(nn.Module):
     Transformer Encoder
     """
 
-    def __init__(self, dim, heads, num_layers, mlp_size):
+    def __init__(self, dim, heads, num_layers, hidden_size, mlp_size):
         super().__init__()
         self.layers = nn.Sequential()
         for n in range(num_layers):
-            self.layers.add_module('transformer_layer_' + str(n), TransformerEncoderLayer(dim, heads, mlp_size))
-        self.layers.add_module('layer_norm', nn.LayerNorm(dim, eps=1e-06))
+            self.layers.add_module('transformer_layer_' + str(n), TransformerEncoderLayer(dim,
+                                                                                          heads,
+                                                                                          hidden_size,
+                                                                                          mlp_size))
+        self.layers.add_module('layer_norm', nn.LayerNorm(hidden_size, eps=1e-06))
 
     def forward(self, x):
         x = self.layers(x)
@@ -58,12 +65,12 @@ class TransformerEncoderLayer(nn.Module):
     The order of layers follow the paper in ViT.
     """
 
-    def __init__(self, dim, heads, mlp_size):
+    def __init__(self, dim, heads, hidden_size, mlp_size):
         super().__init__()
-        self.layer_norm_1 = nn.LayerNorm(dim, eps=1e-06)
-        self.mha = nn.MultiheadAttention(dim, heads, batch_first=True)
-        self.layer_norm_2 = nn.LayerNorm(dim, eps=1e-06)
-        self.mlp = MLP(dim, mlp_size, dim)
+        self.layer_norm_1 = nn.LayerNorm(hidden_size, eps=1e-06)
+        self.mha = nn.MultiheadAttention(hidden_size, heads, batch_first=True)
+        self.layer_norm_2 = nn.LayerNorm(hidden_size, eps=1e-06)
+        self.mlp = MLP(hidden_size, mlp_size, hidden_size)
 
     def forward(self, x):
         x_ = self.layer_norm_1(x)
@@ -104,10 +111,10 @@ class PatchAndPosEmb(nn.Module):
         self.input_size = input_size
         self.patch_num = (input_size[0] // patch_size[0], input_size[1] // patch_size[1])
 
-        self.conv = nn.Conv2d(3, 768, kernel_size=(16, 16), stride=(16, 16))
+        self.conv = nn.Conv2d(3, hidden_size, kernel_size=patch_size, stride=patch_size)
 
-        self.cls_token = nn.Parameter(torch.randn(1, self.dim, 1))
-        self.pos_emb = nn.Parameter(torch.rand(1, self.dim, self.patch_num[0] * self.patch_num[1] + 1))
+        self.cls_token = nn.Parameter(torch.randn(1, hidden_size, 1))
+        self.pos_emb = nn.Parameter(torch.rand(1, hidden_size, self.patch_num[0] * self.patch_num[1] + 1))
 
     def forward(self, x):
         b, c, w, h = x.shape  # b:batch_size  c:channel_size  w:width  h:height
@@ -130,6 +137,56 @@ class ViTB16(ViT):
             if not os.path.exists(FILENAME):
                 print("Downloading.")
                 download_model(FILENAME, 'https://download.pytorch.org/models/vit_b_16-c867db91.pth')
+                print("Download successful, now loading.")
+            else:
+                print("Pretrained model exists, now loading.")
+            state_dict = transfer_pretrained_model(FILENAME)
+            self.load_state_dict(state_dict)
+            print("Pretrained model loaded.")
+
+
+class ViTB32(ViT):
+    def __init__(self, pretrained=False):
+        super().__init__(input_size=(224, 224), patch_size=(32, 32), num_classes=1000)
+        FILENAME = "vit_b_32-d86f8d99.pth"
+        if pretrained:
+            if not os.path.exists(FILENAME):
+                print("Downloading.")
+                download_model(FILENAME, 'https://download.pytorch.org/models/vit_b_32-d86f8d99.pth')
+                print("Download successful, now loading.")
+            else:
+                print("Pretrained model exists, now loading.")
+            state_dict = transfer_pretrained_model(FILENAME)
+            self.load_state_dict(state_dict)
+            print("Pretrained model loaded.")
+
+
+class ViTL16(ViT):
+    def __init__(self, pretrained=False):
+        super().__init__(input_size=(224, 224), patch_size=(16, 16), num_classes=1000, hidden_size=1024, mlp_size=4096,
+                         num_attention_heads=16,  num_layers=24)
+        FILENAME = "vit_l_16-852ce7e3.pth"
+        if pretrained:
+            if not os.path.exists(FILENAME):
+                print("Downloading.")
+                download_model(FILENAME, 'https://download.pytorch.org/models/vit_l_16-852ce7e3.pth')
+                print("Download successful, now loading.")
+            else:
+                print("Pretrained model exists, now loading.")
+            state_dict = transfer_pretrained_model(FILENAME)
+            self.load_state_dict(state_dict)
+            print("Pretrained model loaded.")
+
+
+class ViTL32(ViT):
+    def __init__(self, pretrained=False):
+        super().__init__(input_size=(224, 224), patch_size=(32, 32), num_classes=1000, hidden_size=1024, mlp_size=4096,
+                         num_attention_heads=16,  num_layers=24)
+        FILENAME = "vit_l_32-c7638314.pth"
+        if pretrained:
+            if not os.path.exists(FILENAME):
+                print("Downloading.")
+                download_model(FILENAME, 'https://download.pytorch.org/models/vit_l_32-c7638314.pth')
                 print("Download successful, now loading.")
             else:
                 print("Pretrained model exists, now loading.")

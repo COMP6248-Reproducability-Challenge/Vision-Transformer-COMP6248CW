@@ -46,12 +46,15 @@ model = ViT(input_size=(224, 224),
 Following shows how to load a pre-trained model:
 
 ```python
-from models import ViTB16
+from models import *
 
-model = ViTB16(pretrained=True)  # pre-trained ViT-B/16
+model_b16 = ViTB16(pretrained=True)  # pre-trained ViT-B/16
+model_b32 = ViTB32(pretrained=True)  # pre-trained ViT-B/32
+model_l16 = ViTL16(pretrained=True)  # pre-trained ViT-L/16
+model_l32 = ViTL32(pretrained=True)  # pre-trained ViT-L/32
 ```
 
-The `ViTB16` will download the pre-trained model that provided by [torchvision](https://github.com/pytorch/vision) and
+The class will download the pre-trained model that provided by [torchvision](https://github.com/pytorch/vision) and
 automatically transfer it to our form of state dictionary.
 
 # Plan

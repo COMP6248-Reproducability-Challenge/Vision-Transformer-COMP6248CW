@@ -10,12 +10,12 @@ def download_model(filename, url):
         file.write(down_res.content)
 
 
-def transfer_pretrained_model(filename):
-    a = torch.load(filename)
+def transfer_pretrained_model(filename, map_location='cpu'):
+    a = torch.load(filename, map_location='cpu')
     b = OrderedDict()
     for key, value in a.items():
         if key == 'class_token':
-            b['patch_pos_emb.cls_token'] = value.reshape([1, 768, 1])
+            b['patch_pos_emb.cls_token'] = value.reshape([1, -1, 1])
         elif key == 'encoder.pos_embedding':
             b['patch_pos_emb.pos_emb'] = value.permute(0, 2, 1)
         elif 'conv_proj' in key:
@@ -38,4 +38,6 @@ def transfer_pretrained_model(filename):
             b[key.replace("encoder.ln", "encoder.layers.layer_norm")] = value
         elif 'heads.head' in key:
             b[key.replace("heads.head", "head")] = value
+        elif 'heads.' in key:
+            b[key.replace("heads.", "head.")] = value
     return b
