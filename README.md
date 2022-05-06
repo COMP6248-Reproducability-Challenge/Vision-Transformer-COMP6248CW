@@ -75,6 +75,52 @@ Notice that the hand-in deadline is **13-May-2022 16:00**.
 
 ## Experiments
 
+### Reproduced experiments
+
+Here are most of the experiments in the paper. We will reproduce some of them with check marks.
+
+"<font color=lime>√</font>" indicates that the reproduced experiment is included in this repository.
+
+"<font color=red>×</font>" indicates that the reproduced experiment is NOT included in this repository.
+
+* Build a standard ViT. <font color=lime>√</font>
+
+[//]: # (  ![0]&#40;img/ViT.jpg&#41;)
+* Pretrained ViT on JFT and finetune on other datasets comparing with other models like ResNet. <font color=red>×</font>
+
+[//]: # (  ![1]&#40;img/1.png&#41;)
+* Pretraining on different size of datasets of ImageNet, ImageNet-21k, and JFT- 300M. <font color=red>×</font>
+* Training on random subsets of 9M, 30M, and 90M as well as the full JFT- 300M dataset. <font color=red>×</font>
+
+[//]: # (  ![2]&#40;img/2.png&#41;)
+* Transfer accuracy with increasing pre-training compute. <font color=red>×</font>
+
+[//]: # (  ![3]&#40;img/3.png&#41;)
+* Research into embedding filters. <font color=lime>√</font>
+* Research into positional embedding. <font color=lime>√</font>
+* Research into attention distance. <font color=red>×</font>
+
+[//]: # (  ![4]&#40;img/4.png&#41;)
+* The performance of ViT with self-supervision. <font color=red>×</font>
+* Transfer pre-trained models to various datasets. <font color=lime>√</font>
+
+[//]: # (* ![10]&#40;img/10.png&#41;)
+* Compare SGD and Adam on ResNet. <font color=red>×</font>
+
+[//]: # (  ![5]&#40;img/5.png&#41;)
+* Test different Transformer shapes. <font color=red>×</font>
+
+[//]: # (  ![6]&#40;img/6.png&#41;)
+* Compare positional embeddings of 1-D, 2-D and relative one. <font color=red>×</font>
+
+[//]: # (  ![7]&#40;img/7.png&#41;)
+* More research on axial attentions. <font color=red>×</font>
+
+[//]: # (  ![8]&#40;img/8.png&#41;)
+* Attention maps. <font color=lime>√</font>
+
+[//]: # (  ![9]&#40;img/9.png&#41;)
+
 ### Information of datasets used in paper
 
 | dataset              | size       | number of images | number of classes | Resolution   |
@@ -87,39 +133,3 @@ Notice that the hand-in deadline is **13-May-2022 16:00**.
 | CIFAR-100            | 170MB      |           60,000 |               100 | 32*32        |
 | Oxford Flowers-102   | 330MB      |            8,189 |               102 | around 500   |
 | Oxford IIIT-Pets     | 775MB      |            7,394 |                37 | around 500   |
-
-### Reproduced experiments
-
-Here are most of the experiments in the paper. We will reproduce some of them with check marks.
-
-"<font color=lime>√</font>" indicates that the reproduced experiment is included in this repository.
-
-"<font color=red>×</font>" indicates that the reproduced experiment is NOT included in this repository.
-
-* Build a standard ViT. <font color=lime>√</font>
-  ![0](img/ViT.jpg)
-* Pretrained ViT on JFT and finetune on other datasets comparing with other models like ResNet. <font color=red>×</font>
-  ![1](img/1.png)
-* Pretraining on different size of datasets of ImageNet, ImageNet-21k, and JFT- 300M. <font color=red>×</font>
-* Training on random subsets of 9M, 30M, and 90M as well as the full JFT- 300M dataset. <font color=red>×</font>
-  ![2](img/2.png)
-* Transfer accuracy with increasing pre-training compute. <font color=red>×</font>
-  ![3](img/3.png)
-* Research into embedding filters. <font color=lime>√</font>
-* Research into positional embedding. <font color=lime>√</font>
-* Research into attention distance. <font color=lime>√</font>
-  ![4](img/4.png)
-* The performance of ViT with self-supervision. <font color=red>×</font>
-* Transfer pre-trained models to various datasets. <font color=lime>√</font>
-* ![10](img/10.png)
-* Compare SGD and Adam on ResNet. <font color=red>×</font>
-  ![5](img/5.png)
-* Test different Transformer shapes. <font color=red>×</font>
-  ![6](img/6.png)
-* Compare positional embeddings of 1-D, 2-D and relative one. <font color=red>×</font>
-  ![7](img/7.png)
-* More research on axial attentions. <font color=red>×</font>
-  ![8](img/8.png)
-* Attention maps. <font color=lime>√</font>
-  ![9](img/9.png)
-

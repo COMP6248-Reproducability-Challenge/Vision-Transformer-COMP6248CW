@@ -1,1 +1,5 @@
-Training ViT from scratch can be not possible for us due to the limitation of computing resources. So, we decide to do some in-depth experiments using transfer learning. The package torchvision provided some pre-trained models of Vision Transformer, so subsequent experiments will use the model and pre-trained parameters in the package torch instead of our build mentioned above.
+# Folder of Experiments
+
+Folder `transfer_to_small_datasets` contains experiments of fine-tuning on various datasets including `ResNet` and `ViT`.
+
+File `pos_emb_vit_b_32.py` and `rgb_emb_vit_b_32.py` show experiments of positional embedding and RGB filter of embedding.
