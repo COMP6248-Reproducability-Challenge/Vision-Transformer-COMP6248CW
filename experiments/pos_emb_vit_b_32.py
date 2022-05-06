@@ -1,21 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
-
-
 import torch.nn.functional as F
 import torch
-import torchvision
-import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 
-get_ipython().run_line_magic('matplotlib', 'inline')
+from models import ViTB32
 
-from torchvision.models import vit_b_32
+model = ViTB32(pretrained=True)
 
-model = vit_b_32(pretrained=True)
-pos_embed = model.encoder.pos_embedding
+pos_embed = model.patch_pos_emb.pos_emb.permute(0, 2, 1)
+print(pos_embed.shape)
 cos = torch.nn.CosineSimilarity(dim=1, eps=1e-6)
 fig = plt.figure(figsize=(8, 8))
 for i in range(1, pos_embed.shape[1]):
@@ -25,11 +20,5 @@ for i in range(1, pos_embed.shape[1]):
     ax.axes.get_xaxis().set_visible(False)
     ax.axes.get_yaxis().set_visible(False)
     ax.imshow(sim)
-plt.savefig("pos_emb.png")
-
-
-# In[ ]:
-
-
-
-
+# plt.savefig("pos_emb.png")
+plt.show()
