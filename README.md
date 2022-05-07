@@ -77,59 +77,73 @@ Notice that the hand-in deadline is **13-May-2022 16:00**.
 
 ### Reproduced experiments
 
-Here are most of the experiments in the paper. We will reproduce some of them with check marks.
+We reproduced some experiments on Vision Transformer:
+* Build a standard ViT.
+* Transfer pre-trained models to various datasets.
+* Research into embedding filters.
+* Research into positional embedding.
+* Research into attention maps.
 
-"<font color=lime>√</font>" indicates that the reproduced experiment is included in this repository.
+Please see the folder `/experiments` for details.
 
-"<font color=red>×</font>" indicates that the reproduced experiment is NOT included in this repository.
+[//]: # (Here are most of the experiments in the paper. We will reproduce some of them with check marks.)
 
-* Build a standard ViT. <font color=lime>√</font>
+[//]: # ()
+[//]: # ("<font color=lime>√</font>" indicates that the reproduced experiment is included in this repository.)
 
-[//]: # (  ![0]&#40;img/ViT.jpg&#41;)
-* Pretrained ViT on JFT and finetune on other datasets comparing with other models like ResNet. <font color=red>×</font>
+[//]: # ()
+[//]: # ("<font color=red>×</font>" indicates that the reproduced experiment is NOT included in this repository.)
 
-[//]: # (  ![1]&#40;img/1.png&#41;)
-* Pretraining on different size of datasets of ImageNet, ImageNet-21k, and JFT- 300M. <font color=red>×</font>
-* Training on random subsets of 9M, 30M, and 90M as well as the full JFT- 300M dataset. <font color=red>×</font>
+[//]: # ()
+[//]: # (* Build a standard ViT. <font color=lime>√</font>)
 
-[//]: # (  ![2]&#40;img/2.png&#41;)
-* Transfer accuracy with increasing pre-training compute. <font color=red>×</font>
+[//]: # ()
+[//]: # ([//]: # &#40;  ![0]&#40;img/ViT.jpg&#41;&#41;)
+[//]: # (* Pretrained ViT on JFT and finetune on other datasets comparing with other models like ResNet. <font color=red>×</font>)
 
-[//]: # (  ![3]&#40;img/3.png&#41;)
-* Research into embedding filters. <font color=lime>√</font>
-* Research into positional embedding. <font color=lime>√</font>
-* Research into attention distance. <font color=red>×</font>
+[//]: # ()
+[//]: # ([//]: # &#40;  ![1]&#40;img/1.png&#41;&#41;)
+[//]: # (* Pretraining on different size of datasets of ImageNet, ImageNet-21k, and JFT- 300M. <font color=red>×</font>)
 
-[//]: # (  ![4]&#40;img/4.png&#41;)
-* The performance of ViT with self-supervision. <font color=red>×</font>
-* Transfer pre-trained models to various datasets. <font color=lime>√</font>
+[//]: # (* Training on random subsets of 9M, 30M, and 90M as well as the full JFT- 300M dataset. <font color=red>×</font>)
 
-[//]: # (* ![10]&#40;img/10.png&#41;)
-* Compare SGD and Adam on ResNet. <font color=red>×</font>
+[//]: # ()
+[//]: # ([//]: # &#40;  ![2]&#40;img/2.png&#41;&#41;)
+[//]: # (* Transfer accuracy with increasing pre-training compute. <font color=red>×</font>)
 
-[//]: # (  ![5]&#40;img/5.png&#41;)
-* Test different Transformer shapes. <font color=red>×</font>
+[//]: # ()
+[//]: # ([//]: # &#40;  ![3]&#40;img/3.png&#41;&#41;)
+[//]: # (* Research into embedding filters. <font color=lime>√</font>)
 
-[//]: # (  ![6]&#40;img/6.png&#41;)
-* Compare positional embeddings of 1-D, 2-D and relative one. <font color=red>×</font>
+[//]: # (* Research into positional embedding. <font color=lime>√</font>)
 
-[//]: # (  ![7]&#40;img/7.png&#41;)
-* More research on axial attentions. <font color=red>×</font>
+[//]: # (* Research into attention distance. <font color=red>×</font>)
 
-[//]: # (  ![8]&#40;img/8.png&#41;)
-* Attention maps. <font color=lime>√</font>
+[//]: # ()
+[//]: # ([//]: # &#40;  ![4]&#40;img/4.png&#41;&#41;)
+[//]: # (* The performance of ViT with self-supervision. <font color=red>×</font>)
 
-[//]: # (  ![9]&#40;img/9.png&#41;)
+[//]: # (* Transfer pre-trained models to various datasets. <font color=lime>√</font>)
 
-### Information of datasets used in paper
+[//]: # ()
+[//]: # ([//]: # &#40;* ![10]&#40;img/10.png&#41;&#41;)
+[//]: # (* Compare SGD and Adam on ResNet. <font color=red>×</font>)
 
-| dataset              | size       | number of images | number of classes | Resolution   |
-|----------------------|------------|-----------------:|------------------:|--------------|
-| JFT-300M             | Unreleased |      303,000,000 |            18,291 | Unknown      |
-| ImageNet 21k         | Unknown    |       14,197,122 |            21,841 | 469*387(avg) |
-| ImageNet ILSVRC-2012 | 155GB      |        1,281,167 |             1,000 | 469*387(avg) |
-| ImageNet ReaL (val)  | 6GB        |           50,000 |             1,000 | 469*387(avg) |
-| CIFAR-10             | 170MB      |           60,000 |                10 | 32*32        |
-| CIFAR-100            | 170MB      |           60,000 |               100 | 32*32        |
-| Oxford Flowers-102   | 330MB      |            8,189 |               102 | around 500   |
-| Oxford IIIT-Pets     | 775MB      |            7,394 |                37 | around 500   |
+[//]: # ()
+[//]: # ([//]: # &#40;  ![5]&#40;img/5.png&#41;&#41;)
+[//]: # (* Test different Transformer shapes. <font color=red>×</font>)
+
+[//]: # ()
+[//]: # ([//]: # &#40;  ![6]&#40;img/6.png&#41;&#41;)
+[//]: # (* Compare positional embeddings of 1-D, 2-D and relative one. <font color=red>×</font>)
+
+[//]: # ()
+[//]: # ([//]: # &#40;  ![7]&#40;img/7.png&#41;&#41;)
+[//]: # (* More research on axial attentions. <font color=red>×</font>)
+
+[//]: # ()
+[//]: # ([//]: # &#40;  ![8]&#40;img/8.png&#41;&#41;)
+[//]: # (* Attention maps. <font color=lime>√</font>)
+
+[//]: # ()
+[//]: # ([//]: # &#40;  ![9]&#40;img/9.png&#41;&#41;)
