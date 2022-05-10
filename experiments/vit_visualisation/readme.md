@@ -6,7 +6,7 @@ prediction. The format is like:
 ```python
 logit, attn_weights = model(data)
 ```
-The method 'Attention Rollout' has been used to generate the attention visualisation as a mask 
+The method 'Attention Rollout' has been used to generate the visualisation of attention map as a mask 
 and added on the original picture. 
 See [Quantifying Attention Flow in Transformers](https://arxiv.org/pdf/2005.00928.pdf) for details.
 
